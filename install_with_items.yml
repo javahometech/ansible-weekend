@@ -1,0 +1,10 @@
+---
+ - hosts: webservers
+ # run the tasks in sudo mode
+   become: yes
+   tasks:
+     - name: Install apache server
+       yum: name={{item}} state=present
+       with_items:
+         - httpd
+         - git

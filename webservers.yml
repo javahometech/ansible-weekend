@@ -1,0 +1,16 @@
+---
+ - hosts: webservers
+ # run the tasks in sudo mode
+   become: yes
+   tasks:
+     - name: Install apache server
+       yum: name=httpd state=present
+     - name: Start and enable apache server
+       service: name=httpd state=started  enabled=yes
+     - name: deploy the code on webservers
+       copy: src=./index.html dest=/var/www/html
+       notify: restart apache server
+
+   handlers:
+     - name: restart apache server
+       service: name=httpd state=restarted
