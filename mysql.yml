@@ -1,0 +1,25 @@
+---
+ - hosts: database
+   vars_files:
+     - var.yml
+ # run the tasks in sudo mode
+   become: yes
+   tasks:
+     - name: install python mysql
+       apt: name=python-mysqldb state=present
+     - name: install mysql server
+       apt: name=mysql-server state=present
+     - name: Start and enable mysql server
+       service: name=mysql state=started  enabled=yes
+      #  Configuring my sql server
+     - name: make sure mysql listens from all the hosts
+       lineinfile: dest=/etc/mysql/my.cnf regexp='^bind-address' line='bind-address=0.0.0.0'
+       notify: restart mysql
+     - name: create mysql db
+       mysql_db: name=demo state=present
+     - name: create mysql user
+       mysql_user: name=demo password={{db_demo_pwd}} priv='demo.*:ALL' state=present
+
+   handlers:
+     - name: restart mysql
+       service: name=mysql state=restarted

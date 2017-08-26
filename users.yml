@@ -1,0 +1,11 @@
+---
+- hosts: loadbalancer
+  become: yes
+  tasks:
+    - name: create users
+      user:
+       name: "{{item.name}}"
+       password: "{{item.password}}"
+      with_items:
+        - { name: 'hari', password: 'prasad'}
+        - { name: 'kashvi', password: kashvi}
